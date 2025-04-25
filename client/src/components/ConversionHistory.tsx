@@ -102,19 +102,22 @@ const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps
     }
   };
 
+  const viewAllLink = showViewAll && (
+    <Link 
+      href="/history"
+      className="text-primary hover:text-primary/80 font-medium flex items-center"
+    >
+      View All <ChevronRight className="ml-1 h-4 w-4" />
+    </Link>
+  );
+
   if (isLoading) {
     return (
       <section className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold font-inter">Recent Conversions</h2>
-            {showViewAll && (
-              <Link href="/history">
-                <a className="text-primary hover:text-primary/80 font-medium flex items-center">
-                  View All <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
-              </Link>
-            )}
+            {viewAllLink}
           </div>
           <div className="bg-white rounded-lg shadow overflow-hidden p-8 text-center">
             <p>Loading conversion history...</p>
@@ -130,13 +133,7 @@ const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold font-inter">Recent Conversions</h2>
-            {showViewAll && (
-              <Link href="/history">
-                <a className="text-primary hover:text-primary/80 font-medium flex items-center">
-                  View All <ChevronRight className="ml-1 h-4 w-4" />
-                </a>
-              </Link>
-            )}
+            {viewAllLink}
           </div>
           <div className="bg-white rounded-lg shadow overflow-hidden p-8 text-center">
             <p className="text-error">Error loading conversion history. Please try again later.</p>
@@ -153,13 +150,7 @@ const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold font-inter">Recent Conversions</h2>
-          {showViewAll && displayConversions.length > 0 && (
-            <Link href="/history">
-              <a className="text-primary hover:text-primary/80 font-medium flex items-center">
-                View All <ChevronRight className="ml-1 h-4 w-4" />
-              </a>
-            </Link>
-          )}
+          {showViewAll && displayConversions.length > 0 && viewAllLink}
         </div>
 
         {displayConversions.length === 0 ? (

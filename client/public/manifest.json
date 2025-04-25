@@ -1,0 +1,17 @@
+{
+  "name": "FileForge - File Conversion Utility",
+  "short_name": "FileForge",
+  "description": "Convert PDFs, images, and more with our easy-to-use online tools",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

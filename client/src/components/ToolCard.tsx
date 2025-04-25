@@ -43,10 +43,11 @@ const ToolCard = ({ title, description, icon, color, path, action }: ToolCardPro
       </div>
       <h3 className="text-xl font-bold font-inter mb-2">{title}</h3>
       <p className="text-gray-600 mb-6 flex-grow">{description}</p>
-      <Link href={path}>
-        <a className={`text-${color} font-medium hover:underline inline-flex items-center`}>
-          {action} <ArrowRightIcon className="ml-2 text-sm" />
-        </a>
+      <Link 
+        href={path} 
+        className={`text-${color} font-medium hover:underline inline-flex items-center`}
+      >
+        {action} <ArrowRightIcon className="ml-2 text-sm" />
       </Link>
     </div>
   );
