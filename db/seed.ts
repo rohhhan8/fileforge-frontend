@@ -54,4 +54,4 @@ async function seed() {
   }
 }
 
-seed();
+seed(); 

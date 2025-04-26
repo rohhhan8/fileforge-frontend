@@ -1,6 +1,27 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from "dotenv";
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ESM way to get __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function serveStatic(app: express.Application) {
+  const publicPath = path.join(__dirname, "../dist/public");
+  app.use(express.static(publicPath));
+
+  // Serve `index.html` for all unmatched routes
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(publicPath, "index.html"));
+  });
+}
+
+dotenv.config();
+
 
 const app = express();
 app.use(express.json());
@@ -60,11 +81,7 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  server.listen(port, () => {
+    log(`Server is running on http://localhost:${port}`);
   });
 })();
