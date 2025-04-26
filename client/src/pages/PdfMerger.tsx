@@ -8,6 +8,7 @@ import ProcessingStatus from "@/components/ProcessingStatus";
 import ConversionSuccess from "@/components/ConversionSuccess";
 import { PdfMergeOptions } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import API_BASE_URL from "@/config/api";
 
 const PdfMerger = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -98,7 +99,7 @@ const PdfMerger = () => {
       formData.append("options", JSON.stringify(options));
 
       // Send files to server
-      const response = await fetch("/api/pdf/merge", {
+      const response = await fetch(`${API_BASE_URL}/api/pdf/merge`, {
         method: "POST",
         body: formData,
       });

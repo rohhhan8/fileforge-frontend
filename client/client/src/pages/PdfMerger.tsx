@@ -6,12 +6,10 @@ import UploadedFiles, { UploadedFile } from "@/components/UploadedFiles";
 import ConvertOptions from "@/components/ConvertOptions";
 import ProcessingStatus from "@/components/ProcessingStatus";
 import ConversionSuccess from "@/components/ConversionSuccess";
-import { ImageToPdfOptions } from "@shared/schema";
-import API_BASE_URL from "@/config/api";
+import { PdfMergeOptions } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
-
-
-const ImageToPdf = () => {
+const PdfMerger = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [processProgress, setProcessProgress] = useState<number>(0);
@@ -26,15 +24,14 @@ const ImageToPdf = () => {
 
   const handleFilesAdded = (newFiles: File[]) => {
     // Validate file types
-    const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-    const validFiles = newFiles.filter((file) =>
-      validImageTypes.includes(file.type)
+    const validFiles = newFiles.filter(
+      (file) => file.type === "application/pdf"
     );
     
     if (validFiles.length !== newFiles.length) {
       toast({
         title: "Invalid file type",
-        description: "Only image files (JPG, PNG, GIF, WebP) are accepted",
+        description: "Only PDF files are accepted",
         variant: "destructive",
       });
     }
@@ -71,11 +68,11 @@ const ImageToPdf = () => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
   };
 
-  const handleConvert = async (options: ImageToPdfOptions) => {
-    if (files.length === 0) {
+  const handleConvert = async (options: PdfMergeOptions) => {
+    if (files.length < 2) {
       toast({
-        title: "No files selected",
-        description: "Please add at least one image to convert",
+        title: "Not enough files",
+        description: "Please add at least 2 PDF files to merge",
         variant: "destructive",
       });
       return;
@@ -95,19 +92,19 @@ const ImageToPdf = () => {
     try {
       // Create form data with files and options
       const formData = new FormData();
-      files.forEach((fileObj) => {
+      files.forEach((fileObj, index) => {
         formData.append("files", fileObj.file);
       });
       formData.append("options", JSON.stringify(options));
 
       // Send files to server
-      const response = await fetch(`${API_BASE_URL}/api/pdf/image-to-pdf`, {
+      const response = await fetch("/api/pdf/merge", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to convert images to PDF");
+        throw new Error("Failed to merge PDFs");
       }
 
       const data = await response.json();
@@ -132,7 +129,7 @@ const ImageToPdf = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to convert images to PDF",
+        description: error instanceof Error ? error.message : "Failed to merge PDFs",
         variant: "destructive",
       });
       
@@ -161,9 +158,9 @@ const ImageToPdf = () => {
       <section className="py-12 bg-white border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold font-inter mb-4">Image to PDF</h2>
+            <h2 className="text-3xl font-bold font-inter mb-4">PDF Merger</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Convert single or multiple images into a professional PDF document. Supports JPG, PNG, GIF, and WebP formats.
+              Combine multiple PDF files into a single document. Select files in the order you want them to appear.
             </p>
           </div>
 
@@ -171,20 +168,15 @@ const ImageToPdf = () => {
             <>
               <FileUploader
                 onFilesAdded={handleFilesAdded}
-                accept={{
-                  "image/jpeg": [".jpg", ".jpeg"],
-                  "image/png": [".png"],
-                  "image/gif": [".gif"],
-                  "image/webp": [".webp"],
-                }}
-                instruction="Drop image files here"
+                accept={{ "application/pdf": [".pdf"] }}
+                instruction="Drop PDF files here"
               />
 
               <UploadedFiles files={files} onRemove={handleRemoveFile} />
 
               {files.length > 0 && (
                 <ConvertOptions
-                  type="image-to-pdf"
+                  type="pdf-merge"
                   onSubmit={handleConvert}
                   isProcessing={false}
                   isDisabled={files.length === 0}
@@ -199,7 +191,7 @@ const ImageToPdf = () => {
         <ProcessingStatus
           progress={processProgress}
           onCancel={handleCancel}
-          processingType="convert your images to PDF"
+          processingType="merge your PDF documents"
         />
       )}
 
@@ -209,11 +201,11 @@ const ImageToPdf = () => {
           filesize={result.filesize}
           downloadUrl={result.downloadUrl}
           onStartNew={handleStartNew}
-          conversionType="image-to-pdf"
+          conversionType="pdf-merge"
         />
       )}
     </div>
   );
 };
 
-export default ImageToPdf;
+export default PdfMerger;

@@ -6,12 +6,9 @@ import UploadedFiles, { UploadedFile } from "@/components/UploadedFiles";
 import ConvertOptions from "@/components/ConvertOptions";
 import ProcessingStatus from "@/components/ProcessingStatus";
 import ConversionSuccess from "@/components/ConversionSuccess";
-import { ImageToPdfOptions } from "@shared/schema";
-import API_BASE_URL from "@/config/api";
+import { ImageConvertOptions } from "@shared/schema";
 
-
-
-const ImageToPdf = () => {
+const ImageConverter = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [processProgress, setProcessProgress] = useState<number>(0);
@@ -71,7 +68,7 @@ const ImageToPdf = () => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
   };
 
-  const handleConvert = async (options: ImageToPdfOptions) => {
+  const handleConvert = async (options: ImageConvertOptions) => {
     if (files.length === 0) {
       toast({
         title: "No files selected",
@@ -101,13 +98,13 @@ const ImageToPdf = () => {
       formData.append("options", JSON.stringify(options));
 
       // Send files to server
-      const response = await fetch(`${API_BASE_URL}/api/pdf/image-to-pdf`, {
+      const response = await fetch("/api/images/convert", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to convert images to PDF");
+        throw new Error("Failed to convert images");
       }
 
       const data = await response.json();
@@ -132,7 +129,7 @@ const ImageToPdf = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to convert images to PDF",
+        description: error instanceof Error ? error.message : "Failed to convert images",
         variant: "destructive",
       });
       
@@ -161,9 +158,9 @@ const ImageToPdf = () => {
       <section className="py-12 bg-white border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold font-inter mb-4">Image to PDF</h2>
+            <h2 className="text-3xl font-bold font-inter mb-4">Image Converter</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Convert single or multiple images into a professional PDF document. Supports JPG, PNG, GIF, and WebP formats.
+              Convert images between formats like JPG, PNG, WebP, and GIF. Optimize your images for web or print.
             </p>
           </div>
 
@@ -184,7 +181,7 @@ const ImageToPdf = () => {
 
               {files.length > 0 && (
                 <ConvertOptions
-                  type="image-to-pdf"
+                  type="image-convert"
                   onSubmit={handleConvert}
                   isProcessing={false}
                   isDisabled={files.length === 0}
@@ -199,7 +196,7 @@ const ImageToPdf = () => {
         <ProcessingStatus
           progress={processProgress}
           onCancel={handleCancel}
-          processingType="convert your images to PDF"
+          processingType="convert your images"
         />
       )}
 
@@ -209,11 +206,11 @@ const ImageToPdf = () => {
           filesize={result.filesize}
           downloadUrl={result.downloadUrl}
           onStartNew={handleStartNew}
-          conversionType="image-to-pdf"
+          conversionType="image-convert"
         />
       )}
     </div>
   );
 };
 
-export default ImageToPdf;
+export default ImageConverter;

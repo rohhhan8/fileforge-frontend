@@ -7,6 +7,8 @@ import ConvertOptions from "@/components/ConvertOptions";
 import ProcessingStatus from "@/components/ProcessingStatus";
 import ConversionSuccess from "@/components/ConversionSuccess";
 import { ImageConvertOptions } from "@shared/schema";
+import API_BASE_URL from "@/config/api";
+
 
 const ImageConverter = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -98,7 +100,7 @@ const ImageConverter = () => {
       formData.append("options", JSON.stringify(options));
 
       // Send files to server
-      const response = await fetch("/api/images/convert", {
+      const response = await fetch(`${API_BASE_URL}/api/images/convert`,  {
         method: "POST",
         body: formData,
       });

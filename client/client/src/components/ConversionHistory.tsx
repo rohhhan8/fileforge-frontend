@@ -1,18 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { Conversion } from "@shared/schema";
 import { Link } from "wouter";
-import {
-  Download,
-  Trash2,
-  ChevronRight,
-  File,
-  FileImage,
-  FileText
+import { 
+  Download, 
+  Trash2, 
+  ChevronRight, 
+  File, 
+  FileImage, 
+  FileText 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import API_BASE_URL from "@/config/api";
-
 
 interface ConversionHistoryProps {
   limit?: number;
@@ -38,10 +36,10 @@ function formatDate(dateString: string): string {
   } else if (diffDays === 1) {
     return `Yesterday, ${date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
   } else {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
     });
   }
 }
@@ -76,18 +74,20 @@ function getConversionTypeLabel(conversionType: string) {
 
 const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps) => {
   const { toast } = useToast();
-
+  
   const { data: conversions, isLoading, isError } = useQuery<Conversion[]>({
     queryKey: ['/api/conversions'],
   });
 
   const handleDownload = (outputPath: string, filename: string) => {
-    window.open(`${API_BASE_URL}/api/download?path=${encodeURIComponent(outputPath)}&filename=${encodeURIComponent(filename)}`, '_blank');
+    window.open(`/api/download?path=${encodeURIComponent(outputPath)}&filename=${encodeURIComponent(filename)}`, '_blank');
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`${API_BASE_URL}/api/conversions/${id}`, { method: 'DELETE' });
+      await fetch(`/api/conversions/${id}`, {
+        method: 'DELETE',
+      });
       // Invalidate cache
       toast({
         title: "Conversion deleted",
@@ -103,7 +103,7 @@ const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps
   };
 
   const viewAllLink = showViewAll && (
-    <Link
+    <Link 
       href="/history"
       className="text-primary hover:text-primary/80 font-medium flex items-center"
     >
@@ -201,16 +201,16 @@ const ConversionHistory = ({ limit, showViewAll = true }: ConversionHistoryProps
                         {formatDate(conversion.created_at.toString())}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Button
-                          variant="ghost"
+                        <Button 
+                          variant="ghost" 
                           size="icon"
                           className="text-primary hover:text-primary/80 mr-3"
                           onClick={() => handleDownload(conversion.outputPath, conversion.filename)}
                         >
                           <Download className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
+                        <Button 
+                          variant="ghost" 
                           size="icon"
                           className="text-gray-400 hover:text-gray-600"
                           onClick={() => handleDelete(conversion.id)}

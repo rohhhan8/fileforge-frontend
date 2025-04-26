@@ -7,6 +7,8 @@ import ConvertOptions from "@/components/ConvertOptions";
 import ProcessingStatus from "@/components/ProcessingStatus";
 import ConversionSuccess from "@/components/ConversionSuccess";
 import { PdfToImageOptions } from "@shared/schema";
+import API_BASE_URL from "@/config/api";
+
 
 const PdfToImage = () => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -105,7 +107,7 @@ const PdfToImage = () => {
       formData.append("options", JSON.stringify(options));
 
       // Send file to server
-      const response = await fetch("/api/pdf/pdf-to-image", {
+      const response = await fetch(`${API_BASE_URL}/api/pdf/pdf-to-image`, {
         method: "POST",
         body: formData,
       });

@@ -1,7 +1,4 @@
 import ConversionHistory from "@/components/ConversionHistory";
-import API_BASE_URL from "@/config/api";
-
-
 
 const History = () => {
   return (
